@@ -12,7 +12,6 @@ body {
     text-align: center;
     color: white;
     font-family: Arial;
-
     background-image: url("https://picsum.photos/800/600");
     background-size: cover;
 }
@@ -20,10 +19,6 @@ body {
 canvas {
     background: rgba(0,0,0,0.7);
     margin-top: 20px;
-}
-
-.controls {
-    margin-top: 15px;
 }
 
 button {
@@ -42,7 +37,7 @@ button {
 
 <canvas id="game" width="300" height="300"></canvas>
 
-<div class="controls">
+<div>
 <br>
 <button onclick="setDir('up')">⬆️</button><br>
 <button onclick="setDir('left')">⬅️</button>
@@ -58,19 +53,29 @@ button {
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
 
-let snake = [{x:150,y:150}];
-let food = {x:100,y:100};
-let dir = "right";
-let score = 0;
+let snake, food, dir, score;
+
+// 🔥 دالة إعادة اللعبة
+function resetGame(){
+    snake = [{x:150,y:150}];
+    food = {
+        x: Math.floor(Math.random()*30)*10,
+        y: Math.floor(Math.random()*30)*10
+    };
+    dir = "right";
+    score = 0;
+    document.getElementById("score").innerText = score;
+}
+
+// أول تشغيل
+resetGame();
 
 function draw() {
     ctx.clearRect(0,0,300,300);
 
-    // الدودة
     ctx.fillStyle = "lime";
     snake.forEach(p => ctx.fillRect(p.x,p.y,10,10));
 
-    // الأكل (شوكولا)
     ctx.fillStyle = "brown";
     ctx.fillRect(food.x, food.y, 10, 10);
 
@@ -85,27 +90,24 @@ function move() {
     if(dir==="up") head.y-=10;
     if(dir==="down") head.y+=10;
 
-    // موت إذا خرج
+    // 💀 موت = إعادة مباشرة
     if(head.x<0 || head.y<0 || head.x>=300 || head.y>=300){
-        alert("💀 خسرت!");
-        location.reload();
+        resetGame();
+        return;
     }
 
-    // موت إذا أكل نفسه
     for(let i=0;i<snake.length;i++){
         if(head.x===snake[i].x && head.y===snake[i].y){
-            alert("💀 أكلت نفسك!");
-            location.reload();
+            resetGame();
+            return;
         }
     }
 
     snake.unshift(head);
 
-    // أكل الشوكولا
     if(head.x===food.x && head.y===food.y){
         score++;
         document.getElementById("score").innerText = score;
-
         document.getElementById("eatSound").play();
 
         food.x = Math.floor(Math.random()*30)*10;
@@ -119,7 +121,6 @@ function setDir(d){
     dir = d;
 }
 
-// تحكم الكيبورد
 document.addEventListener("keydown", e=>{
     if(e.key==="ArrowUp") dir="up";
     if(e.key==="ArrowDown") dir="down";
