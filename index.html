@@ -4,46 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>موقعي</title>
+<title>شراء العضلات 💪</title>
 
 <style>
 body {
     margin: 0;
     font-family: Arial;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: white;
     text-align: center;
+    color: white;
+
+    /* خلفية الصورة */
+    background-image: url("image.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .container {
-    padding: 30px;
-}
-
-h1 {
-    font-size: 40px;
-    color: #38bdf8;
-}
-
-img {
-    width: 90%;
-    max-width: 300px;
-    border-radius: 15px;
-    margin-top: 20px;
+    background: rgba(0,0,0,0.6);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 button {
-    margin-top: 25px;
-    padding: 15px 25px;
-    font-size: 18px;
-    background-color: #38bdf8;
+    padding: 20px 30px;
+    font-size: 20px;
+    background: #38bdf8;
     border: none;
     border-radius: 10px;
     cursor: pointer;
 }
 
-.footer {
-    margin-top: 40px;
-    font-size: 18px;
+button:hover {
+    background: #0ea5e9;
+}
+
+.message {
+    margin-top: 20px;
+    font-size: 20px;
+    display: none;
 }
 </style>
 
@@ -53,33 +55,31 @@ button {
 
 <div class="container">
 
-<h1>مرحبا 👋</h1>
-<p>هذا موقعي المطور</p>
+<h1>💪 متجر العضلات</h1>
 
-<!-- صورة شغالة 100% -->
-<img src="https://picsum.photos/300" alt="صورة">
+<button onclick="showError()">اضغط هنا لشراء العضلات</button>
 
-<br>
-
-<button onclick="playSound()">اضغط لتشغيل الصوت</button>
-
-<!-- صوت مضمون -->
-<audio id="sound">
-  <source src="https://www.soundjay.com/button/sounds/button-3.mp3" type="audio/mpeg">
-</audio>
-
-<div class="footer">
-الهدرة مواقع
+<div id="msg" class="message">
+error ❌<br>
+خصك صوارد خويا كي يكونو عندك صوارك اك تشري يا نحيف🥀
 </div>
+
+<audio id="sound">
+  <source src="sound.mp3" type="audio/mpeg">
+</audio>
 
 </div>
 
 <script>
-function playSound() {
-    let audio = document.getElementById("sound");
-    audio.play().catch(function(e){
-        alert("اضغط مرة ثانية لتشغيل الصوت 🔊");
-    });
+function showError() {
+    let msg = document.getElementById("msg");
+    msg.style.display = "block";
+
+    setTimeout(function() {
+        let audio = document.getElementById("sound");
+        audio.volume = 1.0; // صوت عالي
+        audio.play();
+    }, 5000); // بعد 5 ثواني
 }
 </script>
 
