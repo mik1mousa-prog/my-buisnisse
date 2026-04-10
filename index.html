@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🐍 Snake Ultra Smooth</title>
+<title>🐍 Snake Scare</title>
 
 <style>
 body {
@@ -12,13 +12,12 @@ body {
     text-align: center;
     color: white;
     font-family: Arial;
-    background: linear-gradient(#0f172a, #1e293b);
+    background: black;
 }
 
 canvas {
     background: rgba(0,0,0,0.8);
     margin-top: 20px;
-    border-radius: 10px;
 }
 
 button {
@@ -27,12 +26,40 @@ button {
     font-size: 25px;
     margin: 5px;
 }
+
+/* شاشة المفاجأة */
+#scare {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background: black;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 999;
+}
+
+#scare img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#text {
+    position: absolute;
+    bottom: 20px;
+    font-size: 22px;
+    color: red;
+}
 </style>
 </head>
 
 <body>
 
-<h1>🐍 Ultra Snake</h1>
+<h1>🐍 Snake</h1>
 <p>Score: <span id="score">0</span></p>
 
 <canvas id="game" width="300" height="300"></canvas>
@@ -45,55 +72,77 @@ button {
 <button onclick="setDir('right')">➡️</button>
 </div>
 
+<!-- المفاجأة -->
+<div id="scare">
+    <img src="scare.jpg">
+    <div id="text">ماتعرفش تلعب اخي الكريم ماتلعبش</div>
+</div>
+
 <audio id="eatSound">
 <source src="https://www.soundjay.com/button/sounds/button-3.mp3">
 </audio>
 
+<audio id="scream">
+<source src="scream.mp3">
+</audio>
+
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+let canvas = document.getElementById("game");
+let ctx = canvas.getContext("2d");
 
 let snake, food, dir, score;
+let loseCount = 0; // عدد الخسارات
 let grid = 10;
 
-// إعادة اللعبة
 function resetGame(){
     snake = [{x:150,y:150}];
-    food = randomFood();
+    food = {
+        x: Math.floor(Math.random()*30)*grid,
+        y: Math.floor(Math.random()*30)*grid
+    };
     dir = "right";
     score = 0;
     document.getElementById("score").innerText = score;
 }
 
-function randomFood(){
-    return {
-        x: Math.floor(Math.random()*30)*grid,
-        y: Math.floor(Math.random()*30)*grid
-    };
-}
-
 resetGame();
 
-// رسم ناعم
 function draw(){
     ctx.clearRect(0,0,300,300);
 
-    // الدودة
-    ctx.fillStyle = "#22c55e";
-    snake.forEach((p,i)=>{
-        ctx.globalAlpha = 1 - i*0.03;
-        ctx.fillRect(p.x,p.y,grid,grid);
-    });
-    ctx.globalAlpha = 1;
+    ctx.fillStyle = "lime";
+    snake.forEach(p => ctx.fillRect(p.x,p.y,grid,grid));
 
-    // الأكل
     ctx.fillStyle = "orange";
-    ctx.beginPath();
-    ctx.arc(food.x+5, food.y+5, 5, 0, Math.PI*2);
-    ctx.fill();
+    ctx.fillRect(food.x, food.y, grid, grid);
 }
 
-// تحديث
+function gameOver(){
+    loseCount++;
+
+    if(loseCount >= 2){
+        showScare();
+        loseCount = 0;
+    }
+
+    resetGame();
+}
+
+function showScare(){
+    let scare = document.getElementById("scare");
+    let sound = document.getElementById("scream");
+
+    scare.style.display = "flex";
+
+    sound.volume = 1.0;
+    sound.currentTime = 0;
+    sound.play();
+
+    setTimeout(()=>{
+        scare.style.display = "none";
+    }, 3000); // تختفي بعد 3 ثواني
+}
+
 function update(){
     let head = {x: snake[0].x, y: snake[0].y};
 
@@ -102,15 +151,14 @@ function update(){
     if(dir==="up") head.y-=grid;
     if(dir==="down") head.y+=grid;
 
-    // موت
     if(head.x<0 || head.y<0 || head.x>=300 || head.y>=300){
-        resetGame();
+        gameOver();
         return;
     }
 
     for(let i=0;i<snake.length;i++){
         if(head.x===snake[i].x && head.y===snake[i].y){
-            resetGame();
+            gameOver();
             return;
         }
     }
@@ -121,35 +169,28 @@ function update(){
         score++;
         document.getElementById("score").innerText = score;
 
-        document.getElementById("eatSound").currentTime = 0;
         document.getElementById("eatSound").play();
 
-        food = randomFood();
+        food.x = Math.floor(Math.random()*30)*grid;
+        food.y = Math.floor(Math.random()*30)*grid;
     } else {
         snake.pop();
     }
 }
 
-// 🔥 السرعة تتغير حسب السكور
-function getSpeed(){
-    return Math.max(60, 120 - score*3);
-}
-
 let lastTime = 0;
 
 function gameLoop(time){
-    if(time - lastTime > getSpeed()){
+    if(time - lastTime > 120){
         update();
         lastTime = time;
     }
-
     draw();
     requestAnimationFrame(gameLoop);
 }
 
 requestAnimationFrame(gameLoop);
 
-// تحكم
 function setDir(d){
     dir = d;
 }
