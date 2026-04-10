@@ -1,10 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>موقعي</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>موقعي</title>
+
+<style>
+body {
+    background: linear-gradient(to right, #0f172a, #1e293b);
+    color: white;
+    text-align: center;
+    font-family: Arial;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 40px;
+    color: #38bdf8;
+}
+
+p {
+    font-size: 20px;
+}
+
+img {
+    width: 80%;
+    max-width: 300px;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 15px 25px;
+    font-size: 18px;
+    background-color: #38bdf8;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+</style>
 </head>
+
 <body>
-    <h1>مرحبا 👋</h1>
-    <p>هذا أول موقع لي</p>
+
+<h1>مرحبا 👋</h1>
+<p>هذا موقعي المطور</p>
+
+<img src="https://via.placeholder.com/300">
+
+<br>
+
+<button onclick="playSound()">اضغط لتشغيل الصوت</button>
+
+<audio id="myAudio">
+  <source src="https://www.soundjay.com/buttons/sounds/button-3.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+function playSound() {
+    document.getElementById("myAudio").play();
+}
+</script>
+
 </body>
 </html>
