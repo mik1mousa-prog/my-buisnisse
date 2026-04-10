@@ -26,31 +26,27 @@ h1 {
 
 img {
     width: 90%;
-    max-width: 350px;
-    border-radius: 20px;
+    max-width: 300px;
+    border-radius: 15px;
     margin-top: 20px;
 }
 
 button {
     margin-top: 25px;
-    padding: 15px 30px;
-    font-size: 20px;
-    background: #38bdf8;
+    padding: 15px 25px;
+    font-size: 18px;
+    background-color: #38bdf8;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
 }
 
-button:hover {
-    background: #0ea5e9;
-}
-
 .footer {
-    margin-top: 50px;
+    margin-top: 40px;
     font-size: 18px;
-    opacity: 0.8;
 }
 </style>
+
 </head>
 
 <body>
@@ -58,30 +54,32 @@ button:hover {
 <div class="container">
 
 <h1>مرحبا 👋</h1>
+<p>هذا موقعي المطور</p>
 
-<!-- الصورة -->
-<img src="https://files.catbox.moe/3b3t9u.jpg" alt="صورتي">
+<!-- صورة شغالة 100% -->
+<img src="https://picsum.photos/300" alt="صورة">
 
 <br>
 
-<!-- زر الصوت -->
-<button onclick="playSound()">🔊 اضغط للصوت</button>
+<button onclick="playSound()">اضغط لتشغيل الصوت</button>
 
-<!-- الصوت -->
+<!-- صوت مضمون -->
 <audio id="sound">
-  <source src="https://www.myinstants.com/media/sounds/go-go-gaga.mp3" type="audio/mpeg">
+  <source src="https://www.soundjay.com/button/sounds/button-3.mp3" type="audio/mpeg">
 </audio>
 
-<!-- الجملة -->
 <div class="footer">
-    الهدرة مواقع
+الهدرة مواقع
 </div>
 
 </div>
 
 <script>
 function playSound() {
-    document.getElementById("sound").play();
+    let audio = document.getElementById("sound");
+    audio.play().catch(function(e){
+        alert("اضغط مرة ثانية لتشغيل الصوت 🔊");
+    });
 }
 </script>
 
