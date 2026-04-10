@@ -1,51 +1,44 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>شراء العضلات 💪</title>
+<title>موقعي</title>
 
 <style>
 body {
-    margin: 0;
-    font-family: Arial;
-    text-align: center;
+    background: linear-gradient(to right, #0f172a, #1e293b);
     color: white;
-
-    /* خلفية الصورة */
-    background-image: url("image.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    text-align: center;
+    font-family: Arial;
+    margin: 0;
+    padding: 20px;
 }
 
-.container {
-    background: rgba(0,0,0,0.6);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+h1 {
+    font-size: 40px;
+    color: #38bdf8;
+}
+
+p {
+    font-size: 20px;
+}
+
+img {
+    width: 80%;
+    max-width: 300px;
+    border-radius: 15px;
+    margin-top: 20px;
 }
 
 button {
-    padding: 20px 30px;
-    font-size: 20px;
-    background: #38bdf8;
+    margin-top: 20px;
+    padding: 15px 25px;
+    font-size: 18px;
+    background-color: #38bdf8;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-}
-
-button:hover {
-    background: #0ea5e9;
-}
-
-.message {
-    margin-top: 20px;
-    font-size: 20px;
-    display: none;
 }
 </style>
 
@@ -53,33 +46,22 @@ button:hover {
 
 <body>
 
-<div class="container">
+<h1>مرحبا 👋</h1>
+<p>هذا موقعي المطور</p>
 
-<h1>💪 متجر العضلات</h1>
+<img src="https://via.placeholder.com/300" alt="صورة">
 
-<button onclick="showError()">اضغط هنا لشراء العضلات</button>
+<br>
 
-<div id="msg" class="message">
-error ❌<br>
-خصك صوارد خويا كي يكونو عندك صوارك اك تشري يا نحيف🥀
-</div>
+<button onclick="playSound()">اضغط لتشغيل الصوت</button>
 
-<audio id="sound">
-  <source src="sound.mp3" type="audio/mpeg">
+<audio id="myAudio">
+  <source src="https://www.soundjay.com/buttons/sounds/button-3.mp3" type="audio/mpeg">
 </audio>
 
-</div>
-
 <script>
-function showError() {
-    let msg = document.getElementById("msg");
-    msg.style.display = "block";
-
-    setTimeout(function() {
-        let audio = document.getElementById("sound");
-        audio.volume = 1.0; // صوت عالي
-        audio.play();
-    }, 5000); // بعد 5 ثواني
+function playSound() {
+    document.getElementById("myAudio").play();
 }
 </script>
 
