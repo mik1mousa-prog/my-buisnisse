@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🐍 Snake Scare</title>
+<title>🐍 Snake Pro</title>
 
 <style>
 body {
@@ -27,32 +27,56 @@ button {
     margin: 5px;
 }
 
-/* شاشة المفاجأة */
+/* نص المطور */
+#dev {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #38bdf8;
+}
+
+/* انفجار */
+.explosion {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: orange;
+    border-radius: 50%;
+    animation: boom 0.5s ease-out forwards;
+}
+
+@keyframes boom {
+    to {
+        transform: scale(5);
+        opacity: 0;
+    }
+}
+
+/* شاشة الرعب */
 #scare {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    background: black;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 999;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    background:black;
+    z-index:999;
+    flex-direction:column;
 }
 
 #scare img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
 #text {
-    position: absolute;
-    bottom: 20px;
-    font-size: 22px;
-    color: red;
+    position:absolute;
+    bottom:20px;
+    color:red;
+    font-size:22px;
 }
 </style>
 </head>
@@ -64,6 +88,8 @@ button {
 
 <canvas id="game" width="300" height="300"></canvas>
 
+<div id="dev">المطور -المحارب روميو-</div>
+
 <div>
 <br>
 <button onclick="setDir('up')">⬆️</button><br>
@@ -72,7 +98,7 @@ button {
 <button onclick="setDir('right')">➡️</button>
 </div>
 
-<!-- المفاجأة -->
+<!-- شاشة المفاجأة -->
 <div id="scare">
     <img src="scare.jpg">
     <div id="text">ماتعرفش تلعب اخي الكريم ماتلعبش</div>
@@ -91,9 +117,10 @@ let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
 
 let snake, food, dir, score;
-let loseCount = 0; // عدد الخسارات
+let loseCount = 0;
 let grid = 10;
 
+// إعادة اللعبة
 function resetGame(){
     snake = [{x:150,y:150}];
     food = {
@@ -107,6 +134,7 @@ function resetGame(){
 
 resetGame();
 
+// رسم
 function draw(){
     ctx.clearRect(0,0,300,300);
 
@@ -117,7 +145,21 @@ function draw(){
     ctx.fillRect(food.x, food.y, grid, grid);
 }
 
-function gameOver(){
+// انفجار
+function explode(x,y){
+    let div = document.createElement("div");
+    div.className = "explosion";
+    div.style.left = x + "px";
+    div.style.top = y + "px";
+    document.body.appendChild(div);
+
+    setTimeout(()=> div.remove(), 500);
+}
+
+// خسارة
+function gameOver(x,y){
+    explode(x,y); // 💥
+
     loseCount++;
 
     if(loseCount >= 2){
@@ -128,21 +170,23 @@ function gameOver(){
     resetGame();
 }
 
+// مفاجأة
 function showScare(){
     let scare = document.getElementById("scare");
     let sound = document.getElementById("scream");
 
     scare.style.display = "flex";
 
-    sound.volume = 1.0;
     sound.currentTime = 0;
+    sound.volume = 1.0;
     sound.play();
 
     setTimeout(()=>{
         scare.style.display = "none";
-    }, 3000); // تختفي بعد 3 ثواني
+    },3000);
 }
 
+// تحديث
 function update(){
     let head = {x: snake[0].x, y: snake[0].y};
 
@@ -152,13 +196,13 @@ function update(){
     if(dir==="down") head.y+=grid;
 
     if(head.x<0 || head.y<0 || head.x>=300 || head.y>=300){
-        gameOver();
+        gameOver(head.x, head.y);
         return;
     }
 
     for(let i=0;i<snake.length;i++){
         if(head.x===snake[i].x && head.y===snake[i].y){
-            gameOver();
+            gameOver(head.x, head.y);
             return;
         }
     }
@@ -168,7 +212,6 @@ function update(){
     if(head.x===food.x && head.y===food.y){
         score++;
         document.getElementById("score").innerText = score;
-
         document.getElementById("eatSound").play();
 
         food.x = Math.floor(Math.random()*30)*grid;
@@ -178,10 +221,11 @@ function update(){
     }
 }
 
+// loop سريع
 let lastTime = 0;
 
 function gameLoop(time){
-    if(time - lastTime > 120){
+    if(time - lastTime > 100){
         update();
         lastTime = time;
     }
@@ -189,6 +233,7 @@ function gameLoop(time){
     requestAnimationFrame(gameLoop);
 }
 
+// 🔥 يبدأ مباشرة بدون لمس
 requestAnimationFrame(gameLoop);
 
 function setDir(d){
