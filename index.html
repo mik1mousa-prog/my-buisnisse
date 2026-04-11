@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🐍 Snake Horror</title>
+<title>Snake</title>
 
 <style>
 body {
@@ -26,25 +26,24 @@ body {
     display:flex;
     justify-content:center;
     align-items:center;
-    flex-direction:column;
     z-index:1000;
 }
 
-/* زر مرعب */
+/* زر مرتب ومرعب */
 #startBtn {
-    padding: 20px 40px;
-    font-size: 25px;
+    padding: 25px 50px;
+    font-size: 26px;
     color: red;
     background: black;
-    border: 2px solid red;
-    border-radius: 10px;
+    border: 3px solid red;
+    border-radius: 15px;
     cursor: pointer;
     animation: scary 1s infinite alternate;
 }
 
 @keyframes scary {
     from { box-shadow: 0 0 10px red; }
-    to { box-shadow: 0 0 25px red; }
+    to { box-shadow: 0 0 30px red; }
 }
 
 canvas {
@@ -62,6 +61,14 @@ button {
 #dev {
     margin-top: 10px;
     color: #38bdf8;
+}
+
+/* good boy */
+#good {
+    display: none;
+    font-size: 30px;
+    color: lime;
+    margin-top: 10px;
 }
 
 /* شاشة الرعب */
@@ -96,14 +103,15 @@ button {
 
 <body>
 
-<!-- شاشة البداية -->
+<!-- زر البداية فقط بدون عنوان -->
 <div id="startScreen">
-    <h1>👻 لعبة الرعب</h1>
     <button id="startBtn" onclick="startGame()">اضغط للعب</button>
 </div>
 
 <h1>🐍 Snake</h1>
 <p>Score: <span id="score">0</span></p>
+
+<div id="good">good boy 😈</div>
 
 <canvas id="game" width="300" height="300"></canvas>
 
@@ -140,13 +148,11 @@ let loseCount = 0;
 let grid = 10;
 let started = false;
 
-// بدء اللعبة
 function startGame(){
     document.getElementById("startScreen").style.display = "none";
     started = true;
 }
 
-// إعادة
 function resetGame(){
     snake = [{x:150,y:150}];
     food = {
@@ -156,6 +162,7 @@ function resetGame(){
     dir = "right";
     score = 0;
     document.getElementById("score").innerText = score;
+    document.getElementById("good").style.display = "none";
 }
 
 resetGame();
@@ -170,8 +177,7 @@ function draw(){
     ctx.fillRect(food.x, food.y, grid, grid);
 }
 
-// خسارة
-function gameOver(x,y){
+function gameOver(){
     loseCount++;
 
     if(loseCount >= 2){
@@ -182,7 +188,6 @@ function gameOver(x,y){
     resetGame();
 }
 
-// مفاجأة
 function showScare(){
     let scare = document.getElementById("scare");
     let sound = document.getElementById("scream");
@@ -197,9 +202,8 @@ function showScare(){
     },3000);
 }
 
-// تحديث
 function update(){
-    if(!started) return; // ❗ ما يتحرك إلا بعد الضغط
+    if(!started) return;
 
     let head = {x: snake[0].x, y: snake[0].y};
 
@@ -209,13 +213,13 @@ function update(){
     if(dir==="down") head.y+=grid;
 
     if(head.x<0 || head.y<0 || head.x>=300 || head.y>=300){
-        gameOver(head.x, head.y);
+        gameOver();
         return;
     }
 
     for(let i=0;i<snake.length;i++){
         if(head.x===snake[i].x && head.y===snake[i].y){
-            gameOver(head.x, head.y);
+            gameOver();
             return;
         }
     }
@@ -226,6 +230,11 @@ function update(){
         score++;
         document.getElementById("score").innerText = score;
         document.getElementById("eatSound").play();
+
+        // 🔥 عند 15
+        if(score === 15){
+            document.getElementById("good").style.display = "block";
+        }
 
         food.x = Math.floor(Math.random()*30)*grid;
         food.y = Math.floor(Math.random()*30)*grid;
