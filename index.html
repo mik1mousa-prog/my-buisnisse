@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🐍 Snake Pro</title>
+<title>🐍 Snake Horror</title>
 
 <style>
 body {
@@ -13,6 +13,38 @@ body {
     color: white;
     font-family: Arial;
     background: black;
+}
+
+/* شاشة البداية */
+#startScreen {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    z-index:1000;
+}
+
+/* زر مرعب */
+#startBtn {
+    padding: 20px 40px;
+    font-size: 25px;
+    color: red;
+    background: black;
+    border: 2px solid red;
+    border-radius: 10px;
+    cursor: pointer;
+    animation: scary 1s infinite alternate;
+}
+
+@keyframes scary {
+    from { box-shadow: 0 0 10px red; }
+    to { box-shadow: 0 0 25px red; }
 }
 
 canvas {
@@ -27,28 +59,9 @@ button {
     margin: 5px;
 }
 
-/* نص المطور */
 #dev {
     margin-top: 10px;
-    font-size: 18px;
     color: #38bdf8;
-}
-
-/* انفجار */
-.explosion {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: orange;
-    border-radius: 50%;
-    animation: boom 0.5s ease-out forwards;
-}
-
-@keyframes boom {
-    to {
-        transform: scale(5);
-        opacity: 0;
-    }
 }
 
 /* شاشة الرعب */
@@ -83,6 +96,12 @@ button {
 
 <body>
 
+<!-- شاشة البداية -->
+<div id="startScreen">
+    <h1>👻 لعبة الرعب</h1>
+    <button id="startBtn" onclick="startGame()">اضغط للعب</button>
+</div>
+
 <h1>🐍 Snake</h1>
 <p>Score: <span id="score">0</span></p>
 
@@ -98,7 +117,7 @@ button {
 <button onclick="setDir('right')">➡️</button>
 </div>
 
-<!-- شاشة المفاجأة -->
+<!-- المفاجأة -->
 <div id="scare">
     <img src="scare.jpg">
     <div id="text">ماتعرفش تلعب اخي الكريم ماتلعبش</div>
@@ -119,8 +138,15 @@ let ctx = canvas.getContext("2d");
 let snake, food, dir, score;
 let loseCount = 0;
 let grid = 10;
+let started = false;
 
-// إعادة اللعبة
+// بدء اللعبة
+function startGame(){
+    document.getElementById("startScreen").style.display = "none";
+    started = true;
+}
+
+// إعادة
 function resetGame(){
     snake = [{x:150,y:150}];
     food = {
@@ -134,7 +160,6 @@ function resetGame(){
 
 resetGame();
 
-// رسم
 function draw(){
     ctx.clearRect(0,0,300,300);
 
@@ -145,21 +170,8 @@ function draw(){
     ctx.fillRect(food.x, food.y, grid, grid);
 }
 
-// انفجار
-function explode(x,y){
-    let div = document.createElement("div");
-    div.className = "explosion";
-    div.style.left = x + "px";
-    div.style.top = y + "px";
-    document.body.appendChild(div);
-
-    setTimeout(()=> div.remove(), 500);
-}
-
 // خسارة
 function gameOver(x,y){
-    explode(x,y); // 💥
-
     loseCount++;
 
     if(loseCount >= 2){
@@ -176,9 +188,8 @@ function showScare(){
     let sound = document.getElementById("scream");
 
     scare.style.display = "flex";
-
     sound.currentTime = 0;
-    sound.volume = 1.0;
+    sound.volume = 1;
     sound.play();
 
     setTimeout(()=>{
@@ -188,6 +199,8 @@ function showScare(){
 
 // تحديث
 function update(){
+    if(!started) return; // ❗ ما يتحرك إلا بعد الضغط
+
     let head = {x: snake[0].x, y: snake[0].y};
 
     if(dir==="right") head.x+=grid;
@@ -221,7 +234,6 @@ function update(){
     }
 }
 
-// loop سريع
 let lastTime = 0;
 
 function gameLoop(time){
@@ -233,7 +245,6 @@ function gameLoop(time){
     requestAnimationFrame(gameLoop);
 }
 
-// 🔥 يبدأ مباشرة بدون لمس
 requestAnimationFrame(gameLoop);
 
 function setDir(d){
